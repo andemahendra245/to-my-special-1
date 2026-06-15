@@ -1,62 +1,39 @@
 import { useEffect, useState } from "react";
+import { FlowerByType } from "@/components/FlowerSvgs";
 
-const PETAL_COUNT = 16;
-
-const FallingPetals = ({ count = 22 }) => {
-  const [petals] = useState(() =>
-    Array.from({ length: count }).map((_, i) => ({
+// Generate ~90 burst flowers fanning out in all directions, filling the screen
+const buildBurst = (count) => {
+  const items = [];
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    // distance varies — some near center, some far — gives full screen coverage
+    const distance = 8 + Math.pow(Math.random(), 0.6) * 65;
+    const size = 40 + Math.random() * 90;
+    const delay = Math.random() * 1.8;
+    const rot = (Math.random() - 0.5) * 180;
+    // 50% sunflowers, 30% yellow roses, 20% white roses
+    const r = Math.random();
+    const type = r < 0.5 ? "sunflower" : r < 0.8 ? "yrose" : "wrose";
+    items.push({
       id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 6,
-      duration: 6 + Math.random() * 8,
-      drift: (Math.random() - 0.5) * 200,
-      size: 0.6 + Math.random() * 0.9,
-    }))
-  );
-  return (
-    <div className="falling-petals" aria-hidden="true">
-      {petals.map((p) => (
-        <span
-          key={p.id}
-          className="falling-petal"
-          style={{
-            left: `${p.left}%`,
-            animationDelay: `${p.delay}s`,
-            animationDuration: `${p.duration}s`,
-            transform: `scale(${p.size})`,
-            "--drift": `${p.drift}px`,
-          }}
-        />
-      ))}
-    </div>
-  );
+      dx: Math.cos(angle) * distance,
+      dy: Math.sin(angle) * distance,
+      size,
+      delay,
+      rot,
+      type,
+    });
+  }
+  return items;
 };
-
-const Sunflower = () => (
-  <div className="sunflower" aria-hidden="true">
-    {Array.from({ length: PETAL_COUNT }).map((_, i) => {
-      const rot = (360 / PETAL_COUNT) * i;
-      return (
-        <span
-          key={i}
-          className="petal"
-          style={{
-            "--rot": `${rot}deg`,
-            animationDelay: `${0.6 + i * 0.05}s`,
-          }}
-        />
-      );
-    })}
-    <div className="sunflower-center" />
-  </div>
-);
 
 const Splash = ({ phase, onStart, onFinish }) => {
   const [fadingHeart, setFadingHeart] = useState(false);
+  const [flowers] = useState(() => buildBurst(95));
 
   useEffect(() => {
     if (phase === "splash") {
-      // Total splash duration ≈ 6.2s, then transition to book
+      // burst (~3s) + brand fade (~2s) + hold (~1s) -> 6s total
       const t = setTimeout(() => onFinish?.(), 6200);
       return () => clearTimeout(t);
     }
@@ -102,12 +79,23 @@ const Splash = ({ phase, onStart, onFinish }) => {
   }
 
   return (
-    <div
-      className={`splash-stage ${phase === "splash" ? "" : ""}`}
-      data-testid="splash-stage"
-    >
-      <FallingPetals count={26} />
-      <Sunflower />
+    <div className="splash-stage" data-testid="splash-stage">
+      <div className="burst-container" data-testid="flower-burst">
+        {flowers.map((f) => (
+          <div
+            key={f.id}
+            className="burst-flower"
+            style={{
+              "--dx": `${f.dx}vmax`,
+              "--dy": `${f.dy}vmax`,
+              "--rot": `${f.rot}deg`,
+              animationDelay: `${f.delay}s`,
+            }}
+          >
+            <FlowerByType type={f.type} size={f.size} idSuffix={`b${f.id}`} />
+          </div>
+        ))}
+      </div>
       <div className="brand">
         <p className="brand-name">Happy Birthday, Rishii</p>
         <p className="brand-sub">A Memory Book · June 18</p>

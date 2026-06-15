@@ -1,47 +1,36 @@
-// Decorative yellow flowers scattered on left/right edges of the page
-const Flower = ({ size = 90, hue = "#FFD700", accent = "#FF8C00", core = "#5b3d0f" }) => (
-  <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true">
-    <defs>
-      <radialGradient id={`pg-${hue.slice(1)}`} cx="50%" cy="40%" r="60%">
-        <stop offset="0%" stopColor={hue} />
-        <stop offset="70%" stopColor={hue} />
-        <stop offset="100%" stopColor={accent} />
-      </radialGradient>
-    </defs>
-    {Array.from({ length: 10 }).map((_, i) => (
-      <ellipse
-        key={i}
-        cx="50"
-        cy="22"
-        rx="9"
-        ry="22"
-        fill={`url(#pg-${hue.slice(1)})`}
-        stroke={accent}
-        strokeWidth="0.6"
-        opacity="0.92"
-        transform={`rotate(${i * 36} 50 50)`}
-      />
-    ))}
-    <circle cx="50" cy="50" r="11" fill={core} />
-    <circle cx="50" cy="50" r="7" fill="#3a2407" />
-  </svg>
-);
+// Background decorations: realistic yellow rose & sunflower photographs
+// arranged around the page edges as soft, glowing circular accents.
+
+const FLOWERS = [
+  // Sunflower close-up — Aaron Burden's famous shot
+  "https://images.unsplash.com/photo-1533523611631-15e4ef69be08?w=600&q=80&auto=format&fit=crop",
+  // Sunflower close-up #2
+  "https://images.unsplash.com/photo-1666545449593-b337668aa081?w=600&q=80&auto=format&fit=crop",
+  // Yellow sunflower close-up #3
+  "https://images.unsplash.com/photo-1606820152786-272f760f1d0e?w=600&q=80&auto=format&fit=crop",
+  // Yellow rose close-up
+  "https://images.unsplash.com/photo-1723962768162-52d38d21f94b?w=600&q=80&auto=format&fit=crop",
+  // Yellow rose close-up #2
+  "https://images.unsplash.com/photo-1711649883870-7cb75e2e8c3e?w=600&q=80&auto=format&fit=crop",
+  // Vibrant yellow roses in full bloom
+  "https://images.unsplash.com/photo-1769609300795-52dc154dec3e?w=600&q=80&auto=format&fit=crop",
+];
 
 const placements = [
-  // left side
-  { side: "left",  top: "3%",   offset: "2%",  size: 110, rot: -18 },
-  { side: "left",  top: "20%",  offset: "8%",  size: 70,  rot: 22 },
-  { side: "left",  top: "38%",  offset: "1%",  size: 130, rot: -10 },
-  { side: "left",  top: "55%",  offset: "10%", size: 75,  rot: 30 },
-  { side: "left",  top: "72%",  offset: "3%",  size: 95,  rot: -25 },
-  { side: "left",  top: "88%",  offset: "11%", size: 80,  rot: 15 },
-  // right side
-  { side: "right", top: "4%",   offset: "3%",  size: 100, rot: 15 },
-  { side: "right", top: "22%",  offset: "10%", size: 78,  rot: -28 },
-  { side: "right", top: "40%",  offset: "1%",  size: 125, rot: 10 },
-  { side: "right", top: "58%",  offset: "9%",  size: 72,  rot: -18 },
-  { side: "right", top: "74%",  offset: "2%",  size: 105, rot: 22 },
-  { side: "right", top: "89%",  offset: "10%", size: 82,  rot: -14 },
+  // left column
+  { side: "left",  top: "1%",   offset: "1%",  size: 200, rot: -16, idx: 0 },
+  { side: "left",  top: "20%",  offset: "9%",  size: 130, rot: 18,  idx: 2 },
+  { side: "left",  top: "40%",  offset: "0%",  size: 220, rot: -8,  idx: 1 },
+  { side: "left",  top: "58%",  offset: "10%", size: 140, rot: 22,  idx: 4 },
+  { side: "left",  top: "76%",  offset: "2%",  size: 190, rot: -22, idx: 5 },
+  { side: "left",  top: "92%",  offset: "11%", size: 130, rot: 14,  idx: 3 },
+  // right column
+  { side: "right", top: "2%",   offset: "2%",  size: 180, rot: 16,  idx: 1 },
+  { side: "right", top: "22%",  offset: "10%", size: 130, rot: -26, idx: 0 },
+  { side: "right", top: "42%",  offset: "1%",  size: 220, rot: 9,   idx: 4 },
+  { side: "right", top: "60%",  offset: "11%", size: 135, rot: -16, idx: 3 },
+  { side: "right", top: "78%",  offset: "2%",  size: 200, rot: 20,  idx: 5 },
+  { side: "right", top: "94%",  offset: "10%", size: 130, rot: -10, idx: 2 },
 ];
 
 const YellowFlowers = () => (
@@ -57,11 +46,20 @@ const YellowFlowers = () => (
         style={{
           top: p.top,
           [p.side]: p.offset,
-          transform: `rotate(${p.rot}deg)`,
-          animationDelay: `${i * 0.12}s, 0s`,
+          "--rot": `${p.rot}deg`,
+          transform: `translate(-50%, -50%) rotate(${p.rot}deg)`,
+          animationDelay: `${i * 0.12}s`,
+          width: `${p.size}px`,
+          height: `${p.size}px`,
         }}
       >
-        <Flower size={p.size} />
+        <img
+          src={FLOWERS[p.idx]}
+          alt=""
+          loading="lazy"
+          className="flower-photo"
+          draggable={false}
+        />
       </div>
     ))}
   </div>
