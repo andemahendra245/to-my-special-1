@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import LoveLetter from "@/components/LoveLetter";
 import Confetti from "@/components/Confetti";
+import YellowFlowers from "@/components/YellowFlowers";
 
 const TOTAL_PAGES = 6; // cover + 5 chapters
 
@@ -149,6 +150,7 @@ const MemoryBook = () => {
   if (isMobile) {
     return (
       <div className="book-stage" data-testid="book-stage">
+        <YellowFlowers />
         <div className="book" data-testid="book-mobile">
           {PAGES.map((PageComp, i) => (
             <div className="page" key={i} data-testid={`mobile-page-${i}`}>
@@ -168,6 +170,7 @@ const MemoryBook = () => {
   // Desktop 3D book
   return (
     <div className="book-stage" data-testid="book-stage">
+      <YellowFlowers />
       <div className="book" data-testid="book-desktop">
         <div className="book-cover-back" />
         {PAGES.map((PageComp, i) => {
