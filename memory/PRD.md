@@ -34,7 +34,7 @@ A stunning romantic single-page web app for Rishii's birthday (June 18).
 
 ## What's Been Implemented — 2026-02-15
 - [x] All 3 phases (heart → splash → book) with smooth transitions.
-- [x] **Realistic photo flower burst splash**: bright golden flash at center, then 70 actual sunflower/yellow-rose/white-rose photographs explode outward in tight 1.4s burst, then sway gently. Photos preloaded during heart phase for instant burst.
+- [x] **3D realistic flower burst splash**: bright golden flash at center, then 75 transparent-PNG sunflower cutouts explode outward in 3D space — each flower has `rotateX/rotateY/rotateZ` tilts, varied `translateZ` depth, strong drop shadows, and continues to sway in 3D after settling. True alpha-channel cutouts (no frames). Photos preloaded during heart phase for instant burst.
 - [x] **Vintage brown leather diary cover** (rich brown gradients, gold inner borders, leather grain shading).
 - [x] **White grid background** (110×110px grid) with realistic yellow rose & sunflower photographs scattered on both sides.
 - [x] 3D page-flip book (rotateY -180deg around left edge, z-index stacking).

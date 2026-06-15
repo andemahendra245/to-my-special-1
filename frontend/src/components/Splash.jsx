@@ -1,55 +1,75 @@
 import { useEffect, useState } from "react";
 
-// Realistic flower photos used in the burst
-const BURST_PHOTOS = [
-  // Sunflowers (close-up)
-  "https://images.unsplash.com/photo-1533523611631-15e4ef69be08?w=300&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1666545449593-b337668aa081?w=300&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1606820152786-272f760f1d0e?w=300&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1563221923-d90d0a7dcf89?w=300&q=80&auto=format&fit=crop",
-  // Yellow roses
-  "https://images.unsplash.com/photo-1723962768162-52d38d21f94b?w=300&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1711649883870-7cb75e2e8c3e?w=300&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1769609300795-52dc154dec3e?w=300&q=80&auto=format&fit=crop",
-  // White roses
-  "https://images.unsplash.com/photo-1551771562-5f6b587637cb?w=300&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1610247672619-df289f408ff2?w=300&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1486639107311-064febaff1c5?w=300&q=80&auto=format&fit=crop",
+// Transparent-background sunflower cutouts (true 3D feel - no frame around them)
+const SUNFLOWER_PNGS = [
+  "https://pngimg.com/uploads/sunflower/small/sunflower_PNG103755.png",
+  "https://pngimg.com/uploads/sunflower/small/sunflower_PNG103754.png",
+  "https://pngimg.com/uploads/sunflower/small/sunflower_PNG103746.png",
+  "https://pngimg.com/uploads/sunflower/small/sunflower_PNG13409.png",
+  "https://pngimg.com/uploads/sunflower/small/sunflower_PNG13391.png",
+  "https://pngimg.com/uploads/sunflower/small/sunflower_PNG103784.png",
 ];
 
-// Build a true "burst" — all flowers explode out from the center
-// in a tight time window (synchronized firework feel)
+// Realistic flower photographs (soft-masked into petals)
+const PHOTO_FLOWERS = [
+  // Sunflowers
+  "https://images.unsplash.com/photo-1533523611631-15e4ef69be08?w=320&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1666545449593-b337668aa081?w=320&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1606820152786-272f760f1d0e?w=320&q=80&auto=format&fit=crop",
+  // Yellow roses
+  "https://images.unsplash.com/photo-1723962768162-52d38d21f94b?w=320&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1711649883870-7cb75e2e8c3e?w=320&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1769609300795-52dc154dec3e?w=320&q=80&auto=format&fit=crop",
+  // White roses
+  "https://images.unsplash.com/photo-1551771562-5f6b587637cb?w=320&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1610247672619-df289f408ff2?w=320&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1486639107311-064febaff1c5?w=320&q=80&auto=format&fit=crop",
+];
+
+// Build burst with mixed transparent + photo flowers and 3D transforms
 const buildBurst = (count) => {
   const items = [];
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
-    // Distance: a healthy spread across the screen (vmax units)
-    const distance = 12 + Math.pow(Math.random(), 0.55) * 58;
-    const size = 50 + Math.random() * 90;
-    // Tight stagger — flowers ride out in waves but very quickly (0-0.65s)
-    const delay = Math.random() * 0.65;
-    const rot = (Math.random() - 0.5) * 200;
-    const photo = BURST_PHOTOS[Math.floor(Math.random() * BURST_PHOTOS.length)];
+    const distance = 10 + Math.pow(Math.random(), 0.55) * 60;
+    // z-depth simulates closer/farther flowers
+    const dz = (Math.random() - 0.5) * 220;
+    const size = 60 + Math.random() * 110 + (dz / 220) * 30;
+    const delay = Math.random() * 0.6;
+    const rotZ = (Math.random() - 0.5) * 220;
+    const rotX = (Math.random() - 0.5) * 36; // 3D tilt forward/back
+    const rotY = (Math.random() - 0.5) * 36; // 3D tilt left/right
+    // All transparent PNGs — cleanest 3D cutout look across the burst
+    const useTransparent = true;
+    const src = useTransparent
+      ? SUNFLOWER_PNGS[Math.floor(Math.random() * SUNFLOWER_PNGS.length)]
+      : PHOTO_FLOWERS[Math.floor(Math.random() * PHOTO_FLOWERS.length)];
     items.push({
       id: i,
       dx: Math.cos(angle) * distance,
       dy: Math.sin(angle) * distance,
+      dz,
       size,
       delay,
-      rot,
-      photo,
+      rotZ,
+      rotX,
+      rotY,
+      src,
+      transparent: useTransparent,
     });
   }
   return items;
 };
 
+const ALL_SRC = [...SUNFLOWER_PNGS, ...PHOTO_FLOWERS];
+
 const Splash = ({ phase, onStart, onFinish }) => {
   const [fadingHeart, setFadingHeart] = useState(false);
-  const [flowers] = useState(() => buildBurst(70));
+  const [flowers] = useState(() => buildBurst(75));
 
-  // Preload the realistic flower photos while the heart screen is shown
+  // Preload all flower images during the heart screen
   useEffect(() => {
-    BURST_PHOTOS.forEach((src) => {
+    ALL_SRC.forEach((src) => {
       const img = new Image();
       img.src = src;
     });
@@ -57,7 +77,6 @@ const Splash = ({ phase, onStart, onFinish }) => {
 
   useEffect(() => {
     if (phase === "splash") {
-      // burst (~2s) + brand fade (~2s) + hold (~2s) -> 6s total
       const t = setTimeout(() => onFinish?.(), 6200);
       return () => clearTimeout(t);
     }
@@ -104,7 +123,6 @@ const Splash = ({ phase, onStart, onFinish }) => {
 
   return (
     <div className="splash-stage" data-testid="splash-stage">
-      {/* Bright burst flash at center */}
       <div className="burst-flash" aria-hidden="true" />
       <div className="burst-container" data-testid="flower-burst">
         {flowers.map((f) => (
@@ -114,18 +132,21 @@ const Splash = ({ phase, onStart, onFinish }) => {
             style={{
               "--dx": `${f.dx}vmax`,
               "--dy": `${f.dy}vmax`,
-              "--rot": `${f.rot}deg`,
+              "--dz": `${f.dz}px`,
+              "--rotZ": `${f.rotZ}deg`,
+              "--rotX": `${f.rotX}deg`,
+              "--rotY": `${f.rotY}deg`,
               animationDelay: `${f.delay}s`,
               width: `${f.size}px`,
               height: `${f.size}px`,
             }}
           >
             <img
-              src={f.photo}
+              src={f.src}
               alt=""
               loading="eager"
               draggable={false}
-              className="burst-flower-img"
+              className={`burst-flower-img ${f.transparent ? "is-transparent" : "is-photo"}`}
             />
           </div>
         ))}
