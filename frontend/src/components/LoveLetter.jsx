@@ -3,7 +3,7 @@ import { useEffect } from "react";
 const LETTER = `My Dearest Rishii bngrmm,
 ​Thank you so much for coming into my life. To this day, I still find it hard to believe that I am completely yours and you are all mine. Being with you honestly feels like a beautiful dream come true, and I am so incredibly grateful to have you by my side.
 ​Ever since you walked into my world, June 18th has transformed into the most special day of the year for me. My only hope is that we get to celebrate this day together, because nothing matters more to me than seeing you happy and smiling all day long.
-​Thank you so much for choosing me, and for being the most incredible person I have ever known. You are my past, my present, and my entire future. Happy Birthday, my love.";
+​Thank you so much for choosing me, and for being the most incredible person I have ever known. You are my past, my present, and my entire future. Happy Birthday, my love.`;
 
 const LoveLetter = ({ open, onClose }) => {
   useEffect(() => {
