@@ -63,13 +63,21 @@ const Page3 = () => (
     <div className="polaroid-row" data-testid="photo-gallery">
       <div className="polaroid">
         <div className="polaroid-placeholder" data-testid="photo-1">
-          your photo here
+          <img
+            src="/images/WhatsApp Image 2026-06-16 at 9.53.03 PM.jpeg"
+            alt="Meeting #1"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </div>
         <div className="polaroid-caption">Meeting #1</div>
       </div>
       <div className="polaroid">
         <div className="polaroid-placeholder" data-testid="photo-2">
-          your photo here
+          <img
+            src="/images/WhatsApp Image 2026-06-16 at 9.52.52 PM.jpeg"
+            alt="Meeting #2"
+            style={{ width: "100%", height: "100%", objectFit: "cover",objectPosition: "center top" }}
+          />
         </div>
         <div className="polaroid-caption">Meeting #2</div>
       </div>
